@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload Preset</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <link href="[invalid url, do not cite] rel="stylesheet">
 </head>
 <body>
     <h1>Upload Preset</h1>
@@ -19,24 +19,6 @@
         <button type="button" onclick="cancelUpload()">Cancel</button>
         <button type="button" onclick="submitUpload()">Done</button>
     </form>
-    <script>
-        function cancelUpload() {
-            window.location.href = 'index.html';
-        }
-
-        function submitUpload() {
-            const name = document.getElementById('presetName').value;
-            const price = document.getElementById('presetPrice').value;
-            const thumbnail = document.getElementById('thumbnailUrl').value;
-
-            // Store preset data in localStorage
-            let presets = JSON.parse(localStorage.getItem('presets') || '[]');
-            presets.push({ name, price, thumbnail });
-            localStorage.setItem('presets', JSON.stringify(presets));
-
-            // Redirect to home page
-            window.location.href = 'index.html';
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
