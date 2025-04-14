@@ -29,20 +29,13 @@
             const price = document.getElementById('presetPrice').value;
             const thumbnail = document.getElementById('thumbnailUrl').value;
 
-            const preset = document.createElement('div');
-            preset.className = 'preset-item';
-            preset.innerHTML = `
-                <p>${name} - $${price}</p>
-                <img src="${thumbnail}" alt="${name}" style="width: 100px;">
-                <button onclick="buyPreset()">Buy</button>
-            `;
-            document.getElementById('presets').appendChild(preset);
+            // Store preset data in localStorage
+            let presets = JSON.parse(localStorage.getItem('presets') || '[]');
+            presets.push({ name, price, thumbnail });
+            localStorage.setItem('presets', JSON.stringify(presets));
 
+            // Redirect to home page
             window.location.href = 'index.html';
-        }
-
-        function buyPreset() {
-            window.location.href = 'https://www.instagram.com/fnl_studio_/direct/';
         }
     </script>
 </body>
