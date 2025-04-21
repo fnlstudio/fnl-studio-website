@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <title>Edit Preset - FNL Studio</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
@@ -88,13 +89,21 @@
       font-weight: 600;
     }
 
+    main {
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
     .upload-form {
       background-color: var(--accent);
       padding: 25px;
       border-radius: 15px;
       max-width: 400px;
+      min-width: 320px;
       width: 90%;
       text-align: left;
+      margin: 0 auto;
     }
 
     .form-group {
