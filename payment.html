@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment - FNL Studio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f2f2f7;
+      --text: #1a1a1a;
+      --accent: #e0e7ff;
+      --highlight: #5b5fc7;
+      --hover: #4f46e5;
+    }
+
+    [data-theme="dark"] {
+      --bg: #111827;
+      --text: #e5e7eb;
+      --accent: #1f2937;
+      --highlight: #93c5fd;
+      --hover: #60a5fa;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      transition: background-color 0.6s ease, color 0.6s ease;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      text-align: center;
+      padding: 20px;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      max-width: 350px;
+      margin-bottom: 20px;
+    }
+
+    .logo img {
+      height: 40px;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      width: 24px;
+      height: 24px;
+      transition: transform 0.5s ease;
+    }
+
+    .theme-toggle svg {
+      width: 100%;
+      height: 100%;
+      fill: var(--text);
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.2);
+    }
+
+    .theme-toggle.sun {
+      animation: spinFade 0.5s ease forwards;
+    }
+
+    .theme-toggle.moon {
+      animation: spinFade 0.5s ease forwards;
+    }
+
+    .payment-section {
+      background-color: var(--accent);
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 350px;
+      width: 90%;
+      text-align: left;
+      border: 1px solid var(--text);
+    }
+
+    .payment-section h2 {
+      font-size: 1.5em;
+      color: var(--text);
+      margin: 0 0 15px 0;
+      font-weight: 600;
+    }
+
+    .payment-details p {
+      margin: 8px 0;
+      font-size: 0.95em;
+      color: var(--text);
+    }
+
+    .payment-details strong {
+      color: var(--highlight);
+      font-weight: 500;
+    }
+
+    .payment-details span,
+    .payment-details input:disabled {
+      display: inline-block;
+      margin-left: 5px;
+      font-weight: 400;
+      background: var(--bg);
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid var(--text);
+      width: calc(100% - 20px);
+    }
+
+    .payment-details input {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0;
+      border: 1px solid var(--text);
+      border-radius: 5px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.95em;
+      box-sizing: border-box;
+    }
+
+    .payment-details input:focus {
+      border-color: var(--highlight);
+      outline: none;
+    }
+
+    .captcha-text {
+      color: #ef4444;
+      font-size: 0.85em;
+      margin: 5px 0;
+    }
+
+    .pay-button,
+    .upload-proof-button,
+    .download-button {
+      background: var(--highlight);
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      color: var(--bg);
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.95em;
+      margin: 5px 0;
+      width: 100%;
+    }
+
+    .pay-button:hover,
+    .upload-proof-button:hover,
+    .download-button:hover {
+      background: var(--hover);
+    }
+
+    .upload-proof-button,
+    .download-button {
+      display: none;
+    }
+
+    .back-button {
+      background: var(--accent);
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 500;
+      margin-top: 10px;
+      width: 100%;
+    }
+
+    .back-button:hover {
+      background: var(--hover);
+      color: var(--bg);
+    }
+
+    .proof-preview {
+      margin: 10px 0;
+      text-align: center;
+    }
+
+    .proof-preview img {
+      max-width: 100%;
+      border-radius: 5px;
+      margin-top: 5px;
+      display: none;
+    }
+
+    .footer {
+      margin-top: auto;
+      padding: 15px;
+      background: var(--accent);
+      width: 100%;
+      text-align: center;
+      color: var(--text);
+      font-size: 0.85em;
+    }
+
+    .error-message {
+      color: #ef4444;
+      margin-top: 5px;
+      font-size: 0.85em;
+      text-align: center;
+    }
+
+    .qr-code-section {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .qr-code-section img {
+      width: 200px;
+      height: auto;
+      border: 1px solid var(--text);
+      border-radius: 5px;
+    }
+
+    .qr-code-section p {
+      font-size: 0.9em;
+      color: var(--text);
+      margin: 10px 0;
+    }
+
+    /* Animations */
+    @keyframes spinFade {
+      0% { opacity: 0; transform: rotate(90deg) scale(0.5); }
+      100% { opacity: 1; transform: rotate(0deg) scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="https://i.postimg.cc/kX2rSgJw/20250414-095948.png" alt="FNL Studio Logo" />
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()">
+      <svg class="theme-icon" viewBox="0 0 24 24">
+        <path d="M12 17a5 5 0 100-10 5 5 0 000 10zm0 2a7 7 0 110-14 7 7 0 010 14zm-9-7h2m14 0h2M6.3 17.7l1.4-1.4m10.6-10.6l-1.4 1.4m0 14.2l1.4-1.4M6.3 6.3l1.4 1.4M5 12a7 7 0 017-7m7 7a7 7 0 01-7 7"/>
+      </svg>
+    </button>
+  </header>
+  <div class="payment-section">
+    <h2>Payment</h2>
+    <div class="payment-details">
+      <p><strong>Price:</strong> <input type="text" id="price" disabled></p>
+      <p><strong>Preset Name:</strong> <span id="presetName"></span></p>
+      <label>Buyer's Name:</label>
+      <input type="text" id="buyerName" placeholder="Enter your name" required>
+      <label>Email:</label>
+      <input type="email" id="email" placeholder="Enter your email" required>
+      <label>Phone Number:</label>
+      <input type="tel" id="phone" placeholder="Enter your phone number" required>
+      <p class="captcha-text" id="captchaText"></p>
+      <input type="text" id="captchaInput" placeholder="Enter captcha">
+    </div>
+    <button class="pay-button" id="payButton" onclick="initiatePayment()">Pay</button>
+    <button class="upload-proof-button" id="uploadProofButton" onclick="uploadProof()">Upload Proof</button>
+    <div class="proof-preview" id="proofPreview">
+      <p>Proof Preview:</p>
+      <img id="proofImage" alt="Payment Proof">
+    </div>
+    <button class="download-button" id="downloadButton" style="display: none;" onclick="downloadPreset()">Download</button>
+    <div class="qr-code-section">
+      <p>Scan the QR code to pay:</p>
+      <img src="https://i.postimg.cc/TYwyC2xf/Whats-App-Image-2025-04-14-at-10-58-46-PM.jpg" alt="Payment QR Code" id="qrCode">
+      <p>Use any UPI app (e.g., Google Pay, PhonePe) to scan and complete payment.</p>
+    </div>
+    <p class="error-message" id="errorMessage"></p>
+  </div>
+  <button class="back-button" onclick="window.location.href='index.html'">Back</button>
+  <div class="footer">
+    <p>© 2025 FNL Studio. All rights reserved.</p>
+  </div>
+
+  <script>
+    const BIN_ID = "67fccb0b8960c979a584b5d5";
+    const MASTER_KEY = "$2a$10$PlYW4zt8k/Be46UjnPgRSex64CZn7Sk7ifMW09AgYaT1.jS2pwjnO";
+    const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+    const urlParams = new URLSearchParams(window.location.search);
+    const presetStr = urlParams.get('preset');
+    const priceInput = document.getElementById('price');
+    const presetName = document.getElementById('presetName');
+    const buyerNameInput = document.getElementById('buyerName');
+    const emailInput = document.getElementById('email');
+    const phoneInput = document.getElementById('phone');
+    const captchaText = document.getElementById('captchaText');
+    const captchaInput = document.getElementById('captchaInput');
+    const payButton = document.getElementById('payButton');
+    const uploadProofButton = document.getElementById('uploadProofButton');
+    const downloadButton = document.getElementById('downloadButton');
+    const proofPreview = document.getElementById('proofPreview');
+    const proofImage = document.getElementById('proofImage');
+    const errorMessage = document.getElementById('errorMessage');
+    let preset = null;
+
+    // Theme Toggle
+    function toggleTheme() {
+      const root = document.documentElement;
+      const themeButton = document.querySelector('.theme-toggle');
+      const themeIcon = document.querySelector('.theme-icon');
+      const newTheme = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+      root.setAttribute("data-theme", newTheme);
+      localStorage.setItem("theme", newTheme);
+      themeButton.classList.remove('sun', 'moon');
+      themeButton.classList.add(newTheme === 'dark' ? 'moon' : 'sun');
+      themeIcon.innerHTML = newTheme === 'dark' ?
+        '<path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z"/>' :
+        '<path d="M12 17a5 5 0 100-10 5 5 0 000 10zm0 2a7 7 0 110-14 7 7 0 010 14zm-9-7h2m14 0h2M6.3 17.7l1.4-1.4m10.6-10.6l-1.4 1.4m0 14.2l1.4-1.4M6.3 6.3l1.4 1.4M5 12a7 7 0 017-7m7 7a7 7 0 01-7 7"/>';
+    }
+
+    // Initialize Theme
+    (function initializeTheme() {
+      const root = document.documentElement;
+      const themeButton = document.querySelector('.theme-toggle');
+      const themeIcon = document.querySelector('.theme-icon');
+      const savedTheme = localStorage.getItem("theme") || "dark";
+      root.setAttribute("data-theme", savedTheme);
+      themeButton.classList.add(savedTheme === 'dark' ? 'moon' : 'sun');
+      themeIcon.innerHTML = savedTheme === 'dark' ? 
+        '<path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z"/>' : 
+        '<path d="M12 17a5 5 0 100-10 5 5 0 000 10zm0 2a7 7 0 110-14 7 7 0 010 14zm-9-7h2m14 0h2M6.3 17.7l1.4-1.4m10.6-10.6l-1.4 1.4m0 14.2l1.4-1.4M6.3 6.3l1.4 1.4M5 12a7 7 0 017-7m7 7a7 7 0 01-7 7"/>';
+    })();
+
+    function generateCaptcha() {
+      const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      let code = '';
+      for (let i = 0; i < 6; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return code;
+    }
+    const captchaCode = generateCaptcha();
+    captchaText.textContent = `Type "${captchaCode}" to proceed`;
+
+    if (presetStr) {
+      try {
+        preset = JSON.parse(decodeURIComponent(presetStr));
+        priceInput.value = `₹${preset.price}`;
+        presetName.textContent = preset.name || 'Unnamed Preset';
+      } catch (e) {
+        errorMessage.textContent = 'Error parsing preset data: ' + e.message;
+      }
+    } else {
+      errorMessage.textContent = 'No preset selected. Go back and select a preset to buy.';
+    }
+
+    async function initiatePayment() {
+      const buyerName = buyerNameInput.value.trim();
+      const email = emailInput.value.trim();
+      const phone = phoneInput.value.trim();
+      const captcha = captchaInput.value.trim().toUpperCase();
+
+      if (!buyerName) {
+        errorMessage.textContent = 'Please enter your name.';
+        return;
+      }
+      if (!email || !/@/.test(email)) {
+        errorMessage.textContent = 'Please enter a valid email.';
+        return;
+      }
+      if (!phone || !/^\d{10}$/.test(phone)) {
+        errorMessage.textContent = 'Please enter a valid 10-digit phone number.';
+        return;
+      }
+      if (captcha !== captchaCode) {
+        errorMessage.textContent = 'Captcha incorrect. Type the code above.';
+        return;
+      }
+
+      const upiId = '9747604405@fam';
+      const upiUrl = `upi://pay?pa=${encodeURIComponent(upiId)}&am=${encodeURIComponent(preset.price)}&tn=${encodeURIComponent(`Payment for ${buyerName}`)}`;
+      try {
+        const newWindow = window.open(upiUrl, '_blank');
+        if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+          errorMessage.textContent = 'UPI app failed to open automatically. Please copy this URL and paste it into your UPI app: ' + upiUrl;
+          console.error('UPI window failed to open');
+        } else {
+          alert('Redirecting to UPI app. Please complete the payment.');
+        }
+      } catch (e) {
+        errorMessage.textContent = 'Failed to open UPI app. Please copy this URL and use your UPI app: ' + upiUrl;
+        console.error('UPI redirection error:', e);
+      }
+
+      const payment = { id: Date.now(), presetName: preset.name, price: `₹${preset.price}`, buyerName, email, phone, date: new Date().toISOString(), proofUrl: null };
+      try {
+        const response = await fetch(API_URL + "/latest", { headers: { "X-Master-Key": MASTER_KEY } });
+        const data = await response.json();
+        const payments = data.record.payments || [];
+        payments.push(payment);
+        await fetch(API_URL, {
+          method: "PUT",
+          headers: { "X-Master-Key": MASTER_KEY, "Content-Type": "application/json" },
+          body: JSON.stringify({ ...data.record, payments })
+        });
+        payButton.style.display = 'none';
+        uploadProofButton.style.display = 'block';
+      } catch (error) {
+        errorMessage.textContent = 'Error saving payment to cloud: ' + error.message;
+        console.error('Cloud save error:', error);
+      }
+    }
+
+    function uploadProof() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.onchange = async (e) => {
+        const file = e.target.files[0];
+        if (file && file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = async (event) => {
+            proofImage.src = event.target.result;
+            proofImage.style.display = 'block';
+            proofPreview.style.display = 'block';
+            uploadProofButton.style.display = 'none';
+            downloadButton.style.display = 'block';
+            const proofUrl = event.target.result; // Base64 URL
+            try {
+              const response = await fetch(API_URL + "/latest", { headers: { "X-Master-Key": MASTER_KEY } });
+              const data = await response.json();
+              const payments = data.record.payments || [];
+              const latestPayment = payments[payments.length - 1];
+              if (latestPayment) {
+                latestPayment.proofUrl = proofUrl;
+                await fetch(API_URL, {
+                  method: "PUT",
+                  headers: { "X-Master-Key": MASTER_KEY, "Content-Type": "application/json" },
+                  body: JSON.stringify({ ...data.record, payments })
+                });
+              }
+            } catch (error) {
+              errorMessage.textContent = 'Error saving proof to cloud: ' + error.message;
+              console.error('Cloud save proof error:', error);
+            }
+          };
+          reader.readAsDataURL(file);
+        } else {
+          errorMessage.textContent = 'Please upload a valid image file.';
+        }
+      };
+      input.click();
+    }
+
+    function downloadPreset() {
+      if (preset && preset.download_url) {
+        window.location.href = preset.download_url;
+      } else {
+        errorMessage.textContent = 'Download URL not available.';
+      }
+    }
+  </script>
+  <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'933f0ae0ac8ad6a1',t:'MTc0NTI2MTE2OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+</body>
+</html>
