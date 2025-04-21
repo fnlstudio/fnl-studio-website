@@ -313,14 +313,8 @@
     }
 
     @keyframes spinFade {
-      0% {
-        opacity: 0;
-        transform: rotate(90deg) scale(0.5);
-      }
-      100% {
-        opacity: 1;
-        transform: rotate(0deg) scale(1);
-      }
+      0% { opacity: 0; transform: rotate(90deg) scale(0.5); }
+      100% { opacity: 1; transform: rotate(0deg) scale(1); }
     }
 
     @keyframes fadeOutIntro {
@@ -379,10 +373,6 @@
         <h3>How do I install the presets?</h3>
         <p>After purchase, you'll receive detailed instructions on how to install and use the presets in your preferred editing software.</p>
       </div>
-      <div class="faq-item">
-        <h3>Do you offer refunds?</h3>
-        <p>We offer a 30-day money-back guarantee if you're not satisfied with our presets. Contact us at fnlstudio1@gmail.com for assistance.</p>
-      </div>
     </section>
   </main>
 
@@ -421,6 +411,11 @@
         <a href="mailto:fnlstudio1@gmail.com" aria-label="Email">
           <svg viewBox="0 0 24 24">
             <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+          </svg>
+        </a>
+        <a href="#" onclick="window.tidioChatApi && window.tidioChatApi.open()" aria-label="Chat with FNL Lite">
+          <svg viewBox="0 0 24 24">
+            <path d="M21 6h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7c0-.55-.45-1-1-1zm-4 6V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h10c.55 0 1-.45 1-1z"/>
           </svg>
         </a>
       </div>
@@ -476,11 +471,10 @@
       }
     }
 
-    // Cursor Animation
+    // Simplified Cursor Animation
     const canvas = document.getElementById('cursor-canvas');
     const ctx = canvas.getContext('2d');
 
-    // Initialize canvas size
     function resizeCanvas() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
@@ -489,7 +483,6 @@
     window.addEventListener('resize', resizeCanvas);
 
     let particles = [];
-    let fireworks = [];
 
     class Particle {
       constructor(x, y) {
@@ -516,85 +509,23 @@
       }
     }
 
-    class Firework {
-      constructor(x, y) {
-        this.x = x;
-        this.y = y;
-        this.particles = [];
-        for (let i = 0; i < 30; i++) {
-          this.particles.push(new FireworkParticle(this.x, this.y));
-        }
-      }
-
-      update() {
-        this.particles.forEach(p => p.update());
-        this.particles = this.particles.filter(p => p.opacity > 0);
-      }
-
-      draw() {
-        this.particles.forEach(p => p.draw());
-      }
-    }
-
-    class FireworkParticle {
-      constructor(x, y) {
-        this.x = x;
-        this.y = y;
-        this.size = Math.random() * 3 + 1;
-        this.speedX = Math.random() * 6 - 3;
-        this.speedY = Math.random() * 6 - 3;
-        this.opacity = 1;
-      }
-
-      update() {
-        this.x += this.speedX;
-        this.y += this.speedY;
-        this.opacity -= 0.02;
-        this.size -= 0.05;
-      }
-
-      draw() {
-        ctx.fillStyle = `rgba(93, 195, 253, ${this.opacity})`;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-
     function animate() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       particles.forEach(p => {
         p.update();
         p.draw();
       });
-      fireworks.forEach(f => {
-        f.update();
-        f.draw();
-      });
       particles = particles.filter(p => p.opacity > 0);
-      fireworks = fireworks.filter(f => f.particles.length > 0);
       requestAnimationFrame(animate);
     }
 
-    // Start animation
     animate();
 
-    // Add particles on mouse move
     document.addEventListener('mousemove', (e) => {
       const particle = new Particle(e.clientX, e.clientY);
       particles.push(particle);
     });
-
-    // Add fireworks on hover
-    const interactiveElements = document.querySelectorAll('a, button, .btn');
-    interactiveElements.forEach(el => {
-      el.addEventListener('mouseenter', (e) => {
-        const rect = el.getBoundingClientRect();
-        const x = rect.left + rect.width / 2;
-        const y = rect.top + rect.height / 2;
-        fireworks.push(new Firework(x, y));
-      });
-    });
   </script>
+  <script src="//code.tidio.co/e8blwjl6fn8lco7gmjtnc2nk72gojjog.js" async></script>
 </body>
 </html>
