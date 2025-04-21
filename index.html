@@ -1,28 +1,600 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FNL Studio</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="[invalid url, do not cite] rel="stylesheet">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FNL Studio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f2f2f7;
+      --text: #1a1a1a;
+      --accent: #e0e7ff;
+      --highlight: #5b5fc7;
+      --hover: #4f46e5;
+    }
+
+    [data-theme="dark"] {
+      --bg: #111827;
+      --text: #e5e7eb;
+      --accent: #1f2937;
+      --highlight: #93c5fd;
+      --hover: #60a5fa;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      transition: background-color 0.6s ease, color 0.6s ease;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 2rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    #cursor-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    .intro-highlight {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--highlight);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+      animation: fadeOutIntro 2s ease 1s forwards;
+    }
+
+    .intro-highlight img {
+      width: 200px;
+      animation: pulseLogo 1.5s ease infinite;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 3rem;
+      animation: fadeIn 1.5s ease;
+    }
+
+    .logo img {
+      height: 40px;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+    }
+
+    nav a {
+      margin-left: 2rem;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 600;
+      transition: color 0.3s ease;
+      cursor: pointer;
+    }
+
+    nav a:hover {
+      color: var(--hover);
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      width: 24px;
+      height: 24px;
+      margin-left: 2rem;
+      transition: transform 0.5s ease;
+    }
+
+    .theme-toggle svg {
+      width: 100%;
+      height: 100%;
+      fill: var(--text);
+      transition: fill 0.3s ease;
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.2);
+    }
+
+    .theme-toggle.sun {
+      animation: spinFade 0.5s ease forwards;
+    }
+
+    .theme-toggle.moon {
+      animation: spinFade 0.5s ease forwards;
+    }
+
+    .hero {
+      background: var(--accent);
+      padding: 2rem;
+      border-radius: 14px;
+      max-width: 700px;
+      animation: fadeUp 1.8s ease;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      font-size: 1.2rem;
+      color: var(--text);
+    }
+
+    .btn {
+      margin-top: 2rem;
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background-color: var(--highlight);
+      color: var(--bg);
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: background-color 0.4s ease, transform 0.3s ease;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: var(--hover);
+      transform: scale(1.05);
+    }
+
+    .presets {
+      margin-top: 4rem;
+      text-align: center;
+      animation: fadeIn 2s ease;
+    }
+
+    .presets h2 {
+      font-size: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .presets p {
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .faq {
+      margin-top: 4rem;
+      text-align: center;
+      animation: fadeIn 2s ease;
+    }
+
+    .faq h2 {
+      font-size: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .faq-item {
+      max-width: 700px;
+      margin: 0 auto 1.5rem;
+      text-align: left;
+    }
+
+    .faq-item h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .faq-item p {
+      font-size: 1rem;
+      color: var(--text);
+    }
+
+    footer {
+      margin-top: 4rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--text);
+      animation: fadeIn 2s ease;
+    }
+
+    footer h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    footer p {
+      font-size: 1rem;
+      max-width: 600px;
+      margin: 0 auto 1rem;
+    }
+
+    footer .quote {
+      font-style: italic;
+      color: var(--highlight);
+      margin: 1rem auto;
+      max-width: 600px;
+    }
+
+    footer .copyright {
+      color: #888;
+      margin-top: 2rem;
+    }
+
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .social-icons a {
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      transition: transform 0.3s ease;
+    }
+
+    .social-icons a:hover {
+      transform: scale(1.2);
+    }
+
+    .social-icons img,
+    .social-icons svg {
+      width: 100%;
+      height: 100%;
+      fill: var(--text);
+    }
+
+    .supported-apps {
+      margin-top: 2rem;
+      text-align: center;
+    }
+
+    .supported-apps h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .app-grid {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .app-item {
+      text-align: center;
+    }
+
+    .app-item img {
+      width: 50px;
+      height: 50px;
+      margin-bottom: 0.5rem;
+      object-fit: contain;
+    }
+
+    .app-item p {
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes spinFade {
+      0% {
+        opacity: 0;
+        transform: rotate(90deg) scale(0.5);
+      }
+      100% {
+        opacity: 1;
+        transform: rotate(0deg) scale(1);
+      }
+    }
+
+    @keyframes fadeOutIntro {
+      from { opacity: 1; }
+      to { opacity: 0; visibility: hidden; }
+    }
+
+    @keyframes pulseLogo {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <img src="fnl-studio-logo.png" alt="FNL Studio Logo" class="logo">
-        <h1>FNL STUDIO</h1>
-        <p>Capturing Creativity</p>
-        <button id="add-preset-btn">Add Preset</button>
-    </header>
-    <section id="presets"></section>
-    <section id="about">
-        <h2>About Us</h2>
-        <p>Welcome to FNL Studio - a creative collaboration between Light Editz and Flash Editz. We're passionate about visual storytelling and dedicated to providing high-quality, professional-grade presets for photo and video editors. Whether you're just starting out or you're a seasoned creator, our presets are crafted to give your content a unique, polished look with just a few clicks.</p>
+  <div class="intro-highlight">
+    <img src="https://i.postimg.cc/52SYd9y2/fnl-studio-logo.png" alt="FNL Studio Intro Logo">
+  </div>
+  <canvas id="cursor-canvas"></canvas>
+  <header>
+    <div class="logo">
+      <img src="https://i.postimg.cc/52SYd9y2/fnl-studio-logo.png" alt="FNL Studio Logo">
+    </div>
+    <nav>
+      <a onclick="scrollToSection('presets')">Presets</a>
+      <a onclick="scrollToSection('contact')">Contact</a>
+      <button class="theme-toggle" onclick="toggleTheme()">
+        <svg class="theme-icon" viewBox="0 0 24 24">
+          <path d="M12 17a5 5 0 100-10 5 5 0 000 10zm0 2a7 7 0 110-14 7 7 0 010 14zm-9-7h2m14 0h2M6.3 17.7l1.4-1.4m10.6-10.6l-1.4 1.4m0 14.2l1.4-1.4M6.3 6.3l1.4 1.4M5 12a7 7 0 017-7m7 7a7 7 0 01-7 7"/>
+        </svg>
+      </button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>FNL Presets — Edit Smarter, Create Better</h1>
+      <p>Timeless tones for the storytellers of today.</p>
+      <a href="#presets" class="btn" onclick="scrollToSection('presets')">Explore Presets</a>
     </section>
-    <footer>
-        <p>© 2025 FNL Studio. All rights reserved.</p>
-        <p>All content on this website, including presets, visuals, and text, is the intellectual property of FNL Studio and is protected by copyright laws. Any unauthorized use, reproduction, or distribution of our materials is strictly prohibited.</p>
-    </footer>
-    <script src="script.js"></script>
+    <section class="presets" id="presets">
+      <h2>Our Presets</h2>
+      <p>Explore our collection of professionally crafted presets designed to elevate your photos and videos with timeless tones and stunning effects.</p>
+    </section>
+    <section class="faq" id="faq">
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-item">
+        <h3>What are presets?</h3>
+        <p>Presets are pre-configured settings for photo and video editing software that allow you to apply a specific look or style with a single click.</p>
+      </div>
+      <div class="faq-item">
+        <h3>Which apps are supported?</h3>
+        <p>Our presets are compatible with Lightroom, Lightroom Classic, Photoshop, Da Vinci Resolve, and VN.</p>
+      </div>
+      <div class="faq-item">
+        <h3>How do I install the presets?</h3>
+        <p>After purchase, you'll receive detailed instructions on how to install and use the presets in your preferred editing software.</p>
+      </div>
+      <div class="faq-item">
+        <h3>Do you offer refunds?</h3>
+        <p>We offer a 30-day money-back guarantee if you're not satisfied with our presets. Contact us at fnlstudio1@gmail.com for assistance.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer id="contact">
+    <div class="supported-apps">
+      <h2>Supported Apps</h2>
+      <div class="app-grid">
+        <div class="app-item">
+          <img src="https://i.postimg.cc/FsWWkwHb/Adobe-Photoshop-Lightroom-CC-logo-svg.png" alt="Lightroom">
+          <p>Lightroom</p>
+        </div>
+        <div class="app-item">
+          <img src="https://i.postimg.cc/L54DnVd0/Adobe-Photoshop-Lightroom-Classic-CC-icon-svg.png" alt="Lightroom Classic">
+          <p>Lightroom Classic</p>
+        </div>
+        <div class="app-item">
+          <img src="https://i.postimg.cc/rsF6MWfq/Adobe-Photoshop-CC-icon-svg.png" alt="Photoshop">
+          <p>Photoshop</p>
+        </div>
+        <div class="app-item">
+          <img src="https://i.postimg.cc/kG5NnX80/Da-Vinci-Resolve-17-logo-svg-1.png" alt="Da Vinci Resolve">
+          <p>Da Vinci Resolve</p>
+        </div>
+        <div class="app-item">
+          <img src="https://i.postimg.cc/wTMKrXtV/bac747727feb59dc5b7b4d2ccc75a572.jpg" alt="VN">
+          <p>VN</p>
+        </div>
+      </div>
+    </div>
+    <div class="contact-us">
+      <h2>Contact Us</h2>
+      <div class="social-icons">
+        <a href="https://www.instagram.com/fnl_studio_?igsh=MWwxeG5ieWUxamZjbQ==" target="_blank" aria-label="Instagram">
+          <img src="https://i.postimg.cc/y8TMdghb/CIS-A2-K-Instagram-Icon-Black-svg.png" alt="Instagram">
+        </a>
+        <a href="mailto:fnlstudio1@gmail.com" aria-label="Email">
+          <svg viewBox="0 0 24 24">
+            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+    <div class="about-us">
+      <h2>About Us</h2>
+      <p>Welcome to FNL Studio – a creative collaboration between Light Editz and Flash Editz. We're passionate about visual storytelling and dedicated to providing high-quality, professional-grade presets for photo and video editors. Whether you're just starting out or you're a seasoned creator, our presets are crafted to give your content a unique, polished look with just a few clicks.</p>
+    </div>
+    <div class="quote">
+      <p>"Makes the site user-friendly. Keeps visitors longer and increases chances of purchase."</p>
+    </div>
+    <div class="copyright">
+      <p>© 2025 FNL Studio. All rights reserved.</p>
+      <p>All content on this website, including presets, visuals, and text, is the intellectual property of FNL Studio and is protected by copyright laws. Any unauthorized use, reproduction, or distribution of our materials is strictly prohibited.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Theme Toggle
+    const root = document.documentElement;
+    const themeButton = document.querySelector('.theme-toggle');
+    const themeIcon = document.querySelector('.theme-icon');
+
+    if (!localStorage.getItem("theme")) {
+      root.setAttribute("data-theme", "dark");
+      themeButton.classList.add('moon');
+      themeIcon.innerHTML = '<path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z"/>';
+    } else {
+      const currentTheme = localStorage.getItem("theme");
+      root.setAttribute("data-theme", currentTheme);
+      themeButton.classList.add(currentTheme === 'dark' ? 'moon' : 'sun');
+      themeIcon.innerHTML = currentTheme === 'dark' ? 
+        '<path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z"/>' : 
+        '<path d="M12 17a5 5 0 100-10 5 5 0 000 10zm0 2a7 7 0 110-14 7 7 0 010 14zm-9-7h2m14 0h2M6.3 17.7l1.4-1.4m10.6-10.6l-1.4 1.4m0 14.2l1.4-1.4M6.3 6.3l1.4 1.4M5 12a7 7 0 017-7m7 7a7 7 0 01-7 7"/>';
+    }
+
+    function toggleTheme() {
+      const newTheme = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+      root.setAttribute("data-theme", newTheme);
+      localStorage.setItem("theme", newTheme);
+      themeButton.classList.remove('sun', 'moon');
+      themeButton.classList.add(newTheme === 'dark' ? 'moon' : 'sun');
+      themeIcon.innerHTML = newTheme === 'dark' ?
+        '<path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z"/>' :
+        '<path d="M12 17a5 5 0 100-10 5 5 0 000 10zm0 2a7 7 0 110-14 7 7 0 010 14zm-9-7h2m14 0h2M6.3 17.7l1.4-1.4m10.6-10.6l-1.4 1.4m0 14.2l1.4-1.4M6.3 6.3l1.4 1.4M5 12a7 7 0 017-7m7 7a7 7 0 01-7 7"/>';
+    }
+
+    // Smooth Scrolling
+    function scrollToSection(sectionId) {
+      const section = document.getElementById(sectionId);
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    // Cursor Animation
+    const canvas = document.getElementById('cursor-canvas');
+    const ctx = canvas.getContext('2d');
+
+    // Initialize canvas size
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    let particles = [];
+    let fireworks = [];
+
+    class Particle {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.size = Math.random() * 2 + 1;
+        this.speedX = Math.random() * 2 - 1;
+        this.speedY = Math.random() * 2 - 1;
+        this.opacity = 1;
+      }
+
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        this.opacity -= 0.02;
+        this.size -= 0.05;
+      }
+
+      draw() {
+        ctx.fillStyle = `rgba(91, 95, 199, ${this.opacity})`;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    class Firework {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.particles = [];
+        for (let i = 0; i < 30; i++) {
+          this.particles.push(new FireworkParticle(this.x, this.y));
+        }
+      }
+
+      update() {
+        this.particles.forEach(p => p.update());
+        this.particles = this.particles.filter(p => p.opacity > 0);
+      }
+
+      draw() {
+        this.particles.forEach(p => p.draw());
+      }
+    }
+
+    class FireworkParticle {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.size = Math.random() * 3 + 1;
+        this.speedX = Math.random() * 6 - 3;
+        this.speedY = Math.random() * 6 - 3;
+        this.opacity = 1;
+      }
+
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        this.opacity -= 0.02;
+        this.size -= 0.05;
+      }
+
+      draw() {
+        ctx.fillStyle = `rgba(93, 195, 253, ${this.opacity})`;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      fireworks.forEach(f => {
+        f.update();
+        f.draw();
+      });
+      particles = particles.filter(p => p.opacity > 0);
+      fireworks = fireworks.filter(f => f.particles.length > 0);
+      requestAnimationFrame(animate);
+    }
+
+    // Start animation
+    animate();
+
+    // Add particles on mouse move
+    document.addEventListener('mousemove', (e) => {
+      const particle = new Particle(e.clientX, e.clientY);
+      particles.push(particle);
+    });
+
+    // Add fireworks on hover
+    const interactiveElements = document.querySelectorAll('a, button, .btn');
+    interactiveElements.forEach(el => {
+      el.addEventListener('mouseenter', (e) => {
+        const rect = el.getBoundingClientRect();
+        const x = rect.left + rect.width / 2;
+        const y = rect.top + rect.height / 2;
+        fireworks.push(new Firework(x, y));
+      });
+    });
+  </script>
 </body>
 </html>
