@@ -97,232 +97,22 @@
       text-align: left;
     }
 
-    .upload-form label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 600;
-    }
-
-    .upload-form input {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 15px;
-      border: none;
-      border-radius: 10px;
-      background-color: var(--bg);
-      color: var(--text);
-      font-size: 14px;
-    }
-
-    .upload-button {
-      background-color: var(--highlight);
-      padding: 12px 30px;
-      border: none;
-      border-radius: 10px;
-      color: var(--bg);
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 16px;
-      transition: background-color 0.3s, transform 0.2s;
-    }
-
-    .upload-button:hover {
-      background-color: var(--hover);
-      transform: translateY(-2px);
-    }
-
-    .back-button {
-      background-color: var(--accent);
-      padding: 10px 20px;
-      border: none;
-      border-radius: 10px;
-      color: var(--text);
-      cursor: pointer;
-      font-weight: 600;
-      margin-top: 10px;
-      transition: background-color 0.3s, transform 0.2s;
-    }
-
-    .back-button:hover {
-      background-color: var(--hover);
-      color: var(--bg);
-      transform: translateY(-2px);
-    }
-
-    .footer {
-      margin-top: auto;
-      padding: 20px;
-      background-color: var(--accent);
-      width: 100%;
-      text-align: center;
-    }
-
-    .error-message {
-      color: #ef4444;
-      margin-top: 10px;
-    }
-
-    /* Animations */
-    @keyframes spinFade {
-      0% { opacity: 0; transform: rotate(90deg) scale(0.5); }
-      100% { opacity: 1; transform: rotate(0deg) scale(1); }
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <div class="logo">
-      <img src="https://i.postimg.cc/kX2rSgJw/20250414-095948.png" alt="FNL Studio Logo" />
-    </div>
-    <button class="theme-toggle" onclick="toggleTheme()">
-      <svg class="theme-icon" viewBox="0 0 24 24">
-        <path d="M12 17a5 5 0 100-10 5 レッ
-
-System: I notice the response was cut off at a critical point, likely due to a length limit or processing issue. Let me complete the response by providing the full `upload.html` and `edit.html` files, addressing the core issue of displaying uploaded presets, and clarifying any remaining tasks. I’ll also ensure the collaborator code feature is clearly optional and provide a concise summary of what’s done and what’s left.
-
----
-
-### Context and Issue
-You asked why uploaded presets aren’t showing on the website (`https://fnlstudio.netlify.app/`) and if anything is left to do. The presets weren’t displaying because `index.html` lacked code to fetch and render them from JSONBin, unlike `adminindex.html`. I updated `index.html` to display presets with names, prices, thumbnails, and Buy buttons. The previous `edit.html` error (`TypeError: Cannot read properties of null`) was fixed, and dark mode toggles were added to `upload.html` and `edit.html`. You also mentioned a collaborator code "007" in a prior conversation (April 14, 2025), which I’ve included as an optional feature in `adminindex.html`.
-
-### What’s Done
-1. **Presets Display on `index.html`**: Added JavaScript to fetch and display presets from JSONBin in a grid with thumbnails, names, prices, and Buy buttons.
-2. **Fixed `edit.html` Error**: Added checks to prevent `null` errors and redirect to `adminindex.html` if preset data is missing.
-3. **Added Dark Mode Toggles**: `upload.html` and `edit.html` now have sun/moon toggle buttons matching `index.html`.
-4. **Maintained Functionality**: `adminindex.html` lists presets with Edit/Delete buttons; `upload.html` and `edit.html` handle preset uploads/edits via JSONBin.
-5. **Netlify Compatibility**: All files include Cloudflare scripts where needed and are ready for deployment.
-
-### What’s Left (Optional)
-- **Collaborator Code "007"**: Included in `adminindex.html` as a commented-out feature. Uncomment the `checkCollaboratorCode` function if you want to require this code before accessing `upload.html`.
-- **Additional Features**: From prior conversations (April 21, 2025), you requested features like a preset slider, customer reviews, or a centered hero section. These aren’t implemented in the current `index.html`. Let me know if you want them added.
-- **Testing**: Verify presets display on `index.html` after uploading via `adminindex.html` > `upload.html`.
-
-### Updated Files (Complete)
-
-#### 1. index.html
-- Already provided in the previous response with preset fetching and display.
-- Artifact ID: `61d0cc9e-671e-44f2-aaf2-3f770fdd79ff`, Version ID: `9c2b6f9e-2b3a-4f9b-9e0a-7b8f4d3e2c1a`.
-
-#### 2. adminindex.html
-- Unchanged, with optional collaborator code commented out.
-- Artifact ID: `635be719-548c-4343-8fb5-2c924c9540a6`, Version ID: `f0f5081a-8314-4374-80e1-2c209ae1ccf6`.
-
-#### 3. upload.html
-- Completing the cut-off response with the full file.
-- No changes since the last version (includes dark mode toggle).
-- Same artifact ID and version.
-
-<xaiArtifact artifact_id="b1a5c2da-0721-4364-90a1-7a728dfb0fc3" artifact_version_id="34eec88c-70c9-4761-9158-1eef842f1ea8" title="upload.html" contentType="text/html">
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Upload Preset - FNL Studio</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --bg: #f2f2f7;
-      --text: #1a1a1a;
-      --accent: #e0e7ff;
-      --highlight: #5b5fc7;
-      --hover: #4f46e5;
-    }
-
-    [data-theme="dark"] {
-      --bg: #111827;
-      --text: #e5e7eb;
-      --accent: #1f2937;
-      --highlight: #93c5fd;
-      --hover: #60a5fa;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      transition: background-color 0.6s ease, color 0.6s ease;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
-      text-align: center;
-      padding: 20px;
-      margin: 0;
-      min-height: 100vh;
+    .form-group {
       display: flex;
       flex-direction: column;
-      align-items: center;
+      margin-bottom: 15px;
     }
 
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-      max-width: 400px;
-      margin-bottom: 20px;
-    }
-
-    .logo img {
-      height: 40px;
-    }
-
-    .theme-toggle {
-      background: none;
-      border: none;
-      cursor: pointer;
-      width: 24px;
-      height: 24px;
-      transition: transform 0.5s ease;
-    }
-
-    .theme-toggle svg {
-      width: 100%;
-      height: 100%;
-      fill: var(--text);
-    }
-
-    .theme-toggle:hover {
-      transform: scale(1.2);
-    }
-
-    .theme-toggle.sun {
-      animation: spinFade 0.5s ease forwards;
-    }
-
-    .theme-toggle.moon {
-      animation: spinFade 0.5s ease forwards;
-    }
-
-    h1 {
-      font-size: 1.5em;
-      margin: 15px 0;
-      font-weight: 600;
-    }
-
-    .upload-form {
-      background-color: var(--accent);
-      padding: 25px;
-      border-radius: 15px;
-      max-width: 400px;
-      width: 90%;
-      text-align: left;
-    }
-
-    .upload-form label {
+    .form-group label {
       display: block;
-      margin-bottom: 8px;
+      margin-bottom: 5px;
       font-weight: 600;
     }
 
-    .upload-form input {
+    .form-group input {
       width: 100%;
       padding: 10px;
-      margin-bottom: 15px;
-      border: none;
+      border: 1px solid var(--text);
       border-radius: 10px;
       background-color: var(--bg);
       color: var(--text);
@@ -397,20 +187,34 @@ You asked why uploaded presets aren’t showing on the website (`https://fnlstud
   </header>
   <h1>Upload Preset</h1>
   <div class="upload-form" id="uploadForm">
-    <label for="name">Name:</label>
-    <input type="text" id="name" required />
-    <label for="price">Price (₹):</label>
-    <input type="number" id="price" step="0.01" required />
-    <label for="download_url">Download URL:</label>
-    <input type="text" id="download_url" required />
-    <label for="thumbnail_url">Thumbnail URL:</label>
-    <input type="text" id="thumbnail_url" required />
-    <label for="sample1">Sample 1 (optional):</label>
-    <input type="text" id="sample1" />
-    <label for="sample2">Sample 2 (optional):</label>
-    <input type="text" id="sample2" />
-    <label for="sample3">Sample 3 (optional):</label>
-    <input type="text" id="sample3" />
+    <div class="form-group">
+      <label for="name">Name:</label>
+      <input type="text" id="name" required />
+    </div>
+    <div class="form-group">
+      <label for="price">Price (₹):</label>
+      <input type="number" id="price" step="0.01" required />
+    </div>
+    <div class="form-group">
+      <label for="download_url">Download URL:</label>
+      <input type="text" id="download_url" required />
+    </div>
+    <div class="form-group">
+      <label for="thumbnail_url">Thumbnail URL:</label>
+      <input type="text" id="thumbnail_url" required />
+    </div>
+    <div class="form-group">
+      <label for="sample1">Sample 1 (optional):</label>
+      <input type="text" id="sample1" />
+    </div>
+    <div class="form-group">
+      <label for="sample2">Sample 2 (optional):</label>
+      <input type="text" id="sample2" />
+    </div>
+    <div class="form-group">
+      <label for="sample3">Sample 3 (optional):</label>
+      <input type="text" id="sample3" />
+    </div>
     <button class="upload-button" onclick="uploadPreset()">Upload</button>
   </div>
   <button class="back-button" onclick="window.location.href='adminindex.html'">Back</button>
@@ -501,5 +305,6 @@ You asked why uploaded presets aren’t showing on the website (`https://fnlstud
     };
   </script>
   <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'933f0ae0ac8ad6a1',t:'MTc0NTI2MTE2OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+  <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'933f7980da736765',t:'MTc0NTI2NTcwMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>
