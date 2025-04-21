@@ -410,7 +410,7 @@
     }
 
     .overlay .btn {
-      margin: 10px 5px 0;
+      margin-top: 10px;
       padding: 0.5rem 1rem;
       font-size: 0.85rem;
     }
@@ -482,7 +482,6 @@
       <button class="close-button" onclick="closeOverlay()">✕</button>
       <div id="sampleGrid" class="sample-grid"></div>
       <a id="overlayBuyButton" href="#" class="btn">Buy</a>
-      <a id="overlayTryButton" href="#" class="btn">Try</a>
     </div>
   </div>
   <header>
@@ -591,7 +590,7 @@
     const presetOverlay = document.getElementById("presetOverlay");
     const sampleGrid = document.getElementById("sampleGrid");
     const overlayBuyButton = document.getElementById("overlayBuyButton");
-    const overlayTryButton = document.getElementById("overlayTryButton");
+    window.presets = [];
 
     // Theme Toggle
     const root = document.documentElement;
@@ -648,7 +647,6 @@
         });
       }
       overlayBuyButton.href = `payment.html?preset=${encodeURIComponent(JSON.stringify(preset))}`;
-      overlayTryButton.href = `try.html?preset=${encodeURIComponent(JSON.stringify(preset))}`;
       presetOverlay.style.display = 'flex';
     }
 
@@ -662,7 +660,8 @@
         const response = await fetch(API_URL + "/latest", { headers: { "X-Master-Key": MASTER_KEY } });
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
-        displayPresets(data.record.presets || []);
+        window.presets = data.record.presets || [];
+        displayPresets(window.presets);
       } catch (error) {
         console.error("Error fetching presets:", error);
         errorMessage.textContent = "Error fetching presets: " + error.message;
@@ -675,16 +674,24 @@
         presetGrid.innerHTML = '<p>No presets available.</p>';
         return;
       }
-      presets.forEach(preset => {
+      presets.forEach((preset, index) => {
         const presetItem = document.createElement('div');
         presetItem.className = 'preset-item';
         presetItem.innerHTML = `
-          <img src="${preset.thumbnail_url}" alt="${preset.name} Thumbnail" onclick="showOverlay(${JSON.stringify(preset)})">
+          <img src="${preset.thumbnail_url}" alt="${preset.name} Thumbnail" data-preset-index="${index}">
           <h3>${preset.name}</h3>
           <p>₹${preset.price}</p>
           <a href="payment.html?preset=${encodeURIComponent(JSON.stringify(preset))}" class="btn">Buy</a>
         `;
         presetGrid.appendChild(presetItem);
+      });
+
+      // Add click listeners to preset images
+      document.querySelectorAll('.preset-item img').forEach(img => {
+        img.addEventListener('click', () => {
+          const index = img.getAttribute('data-preset-index');
+          showOverlay(window.presets[index]);
+        });
       });
     }
 
