@@ -217,7 +217,7 @@
     </div>
     <button class="upload-button" onclick="uploadPreset()">Upload</button>
   </div>
-  <button class="back-button" onclick="window.location.href='adminindex.html'">Back</button>
+  <button class="back-button" onclick="window.location.href='admin.html'">Back</button>
   <div id="errorMessage" class="error-message"></div>
   <div class="footer">
     <h3>About Us</h3>
@@ -290,7 +290,7 @@
           body: JSON.stringify({ ...data.record, presets })
         });
         alert("Preset uploaded successfully!");
-        window.location.href = "adminindex.html";
+        window.location.href = "admin.html";
       } catch (error) {
         console.error("Error uploading preset:", error);
         errorMessage.textContent = "Error uploading preset: " + error.message;
