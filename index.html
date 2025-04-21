@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <title>FNL Studio</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
@@ -211,6 +212,7 @@
       object-fit: cover;
       border-radius: 8px;
       margin-bottom: 0.75rem;
+      cursor: pointer;
     }
 
     .preset-item h3 {
@@ -351,6 +353,68 @@
       font-size: 1rem;
     }
 
+    /* Overlay Styles */
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .overlay-content {
+      background: var(--accent);
+      padding: 25px;
+      border-radius: 15px;
+      max-width: 400px;
+      min-width: 320px;
+      width: 90%;
+      text-align: center;
+      position: relative;
+    }
+
+    .sample-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .sample-grid img {
+      width: 100%;
+      max-height: 150px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .close-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: var(--text);
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+
+    .close-button:hover {
+      color: var(--hover);
+    }
+
+    .overlay .btn {
+      margin: 10px 5px 0;
+      padding: 0.5rem 1rem;
+      font-size: 0.85rem;
+    }
+
     /* Mobile Adjustments */
     @media (max-width: 600px) {
       .preset-grid {
@@ -373,6 +437,10 @@
       .preset-item .btn {
         padding: 0.4rem 0.8rem;
         font-size: 0.8rem;
+      }
+
+      .sample-grid {
+        grid-template-columns: 1fr;
       }
     }
 
@@ -406,12 +474,20 @@
 </head>
 <body>
   <div class="intro-highlight">
-    <img src="https://i.postimg.cc/52SYd9y2/fnl-studio-logo.png" alt="FNL Studio Intro Logo">
+    <img src="https://i.postimg.cc/52SYd9y2/fnl-studio-logo.png" alt="FNL Studio Intro Logo" onerror="this.src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAGFBMVEUAAAD///8AAAD/AAD/////AAAA/wD//wC3K4xiAAAAB3RSTlMA/4D/gP+Av4CXUwAAAEhJREFUeAHtkkEKwCAMBENR+v9fO8gJLNskK6ZQsYEBuA3XgU8iEskkmUwqR2AymWSSSSaTZmAymWSSSSaTZmAymWSSSSaTZmD4BTwBBj2rKmcAAAAASUVORK5CYII=';">
   </div>
   <canvas id="cursor-canvas"></canvas>
+  <div id="presetOverlay" class="overlay">
+    <div class="overlay-content">
+      <button class="close-button" onclick="closeOverlay()">✕</button>
+      <div id="sampleGrid" class="sample-grid"></div>
+      <a id="overlayBuyButton" href="#" class="btn">Buy</a>
+      <a id="overlayTryButton" href="#" class="btn">Try</a>
+    </div>
+  </div>
   <header>
     <div class="logo">
-      <img src="https://i.postimg.cc/52SYd9y2/fnl-studio-logo.png" alt="FNL Studio Logo">
+      <img src="https://i.postimg.cc/52SYd9y2/fnl-studio-logo.png" alt="FNL Studio Logo" onerror="this.src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAGFBMVEUAAAD///8AAAD/AAD/////AAAA/wD//wC3K4xiAAAAB3RSTlMA/4D/gP+Av4CXUwAAAEhJREFUeAHtkkEKwCAMBENR+v9fO8gJLNskK6ZQsYEBuA3XgU8iEskkmUwqR2AymWSSSSaTZmAymWSSSSaTZmAymWSSSSaTZmD4BTwBBj2rKmcAAAAASUVORK5CYII=';">
     </div>
     <nav>
       <a onclick="scrollToSection('presets')">Presets</a>
@@ -485,7 +561,7 @@
         <a href="https://www.instagram.com/fnl_studio_?igsh=MWwxeG5ieWUxamZjbQ==" target="_blank" aria-label="Instagram">
           <img src="https://i.postimg.cc/y8TMdghb/CIS-A2-K-Instagram-Icon-Black-svg.png" alt="Instagram">
         </a>
-        <a href="mailto:fnlstudio1@gmail.com" aria-label="Email">
+        <a href="/cdn-cgi/l/email-protection#8ceae2e0fff8f9e8e5e3bdccebe1ede5e0a2efe3e1" aria-label="Email">
           <svg viewBox="0 0 24 24">
             <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
           </svg>
@@ -505,12 +581,17 @@
     </div>
   </footer>
 
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
   <script>
     const BIN_ID = "67fccb0b8960c979a584b5d5";
     const MASTER_KEY = "$2a$10$PlYW4zt8k/Be46UjnPgRSex64CZn7Sk7ifMW09AgYaT1.jS2pwjnO";
     const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
     const presetGrid = document.getElementById("presetGrid");
     const errorMessage = document.getElementById("errorMessage");
+    const presetOverlay = document.getElementById("presetOverlay");
+    const sampleGrid = document.getElementById("sampleGrid");
+    const overlayBuyButton = document.getElementById("overlayBuyButton");
+    const overlayTryButton = document.getElementById("overlayTryButton");
 
     // Theme Toggle
     const root = document.documentElement;
@@ -549,6 +630,32 @@
       }
     }
 
+    // Overlay Functions
+    function showOverlay(preset) {
+      sampleGrid.innerHTML = '';
+      const samples = [preset.sample1, preset.sample2, preset.sample3].filter(url => url);
+      if (samples.length === 0) {
+        sampleGrid.innerHTML = '<p>No sample images available.</p>';
+      } else {
+        samples.forEach(url => {
+          const img = document.createElement('img');
+          img.src = url;
+          img.alt = `${preset.name} Sample`;
+          img.onerror = () => {
+            img.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAGFBMVEUAAAD///8AAAD/AAD/////AAAA/wD//wC3K4xiAAAAB3RSTlMA/4D/gP+Av4CXUwAAAEhJREFUeAHtkkEKwCAMBENR+v9fO8gJLNskK6ZQsYEBuA3XgU8iEskkmUwqR2AymWSSSSaTZmAymWSSSSaTZmAymWSSSSaTZmD4BTwBBj2rKmcAAAAASUVORK5CYII=';
+          };
+          sampleGrid.appendChild(img);
+        });
+      }
+      overlayBuyButton.href = `payment.html?preset=${encodeURIComponent(JSON.stringify(preset))}`;
+      overlayTryButton.href = `try.html?preset=${encodeURIComponent(JSON.stringify(preset))}`;
+      presetOverlay.style.display = 'flex';
+    }
+
+    function closeOverlay() {
+      presetOverlay.style.display = 'none';
+    }
+
     // Fetch and Display Presets
     async function fetchPresets() {
       try {
@@ -572,7 +679,7 @@
         const presetItem = document.createElement('div');
         presetItem.className = 'preset-item';
         presetItem.innerHTML = `
-          <img src="${preset.thumbnail_url}" alt="${preset.name} Thumbnail">
+          <img src="${preset.thumbnail_url}" alt="${preset.name} Thumbnail" onclick="showOverlay(${JSON.stringify(preset)})">
           <h3>${preset.name}</h3>
           <p>₹${preset.price}</p>
           <a href="payment.html?preset=${encodeURIComponent(JSON.stringify(preset))}" class="btn">Buy</a>
@@ -636,6 +743,13 @@
     document.addEventListener('mousemove', (e) => {
       const particle = new Particle(e.clientX, e.clientY);
       particles.push(particle);
+    });
+
+    // Close overlay when clicking outside content
+    presetOverlay.addEventListener('click', (e) => {
+      if (e.target === presetOverlay) {
+        closeOverlay();
+      }
     });
 
     window.onload = fetchPresets;
