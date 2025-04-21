@@ -176,13 +176,57 @@
 
     .presets h2 {
       font-size: 2rem;
-      margin-bottom: 2rem;
+      margin-bottom: 1rem;
     }
 
     .presets p {
       font-size: 1.1rem;
       max-width: 600px;
+      margin: 0 auto 2rem;
+    }
+
+    .preset-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
       margin: 0 auto;
+    }
+
+    .preset-item {
+      background: var(--accent);
+      padding: 1rem;
+      border-radius: 8px;
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+
+    .preset-item:hover {
+      transform: scale(1.05);
+    }
+
+    .preset-item img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+
+    .preset-item h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .preset-item p {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .preset-item .btn {
+      margin-top: 0;
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
     }
 
     .faq {
@@ -301,6 +345,12 @@
       color: var(--text);
     }
 
+    .error-message {
+      color: #ef4444;
+      margin-top: 1rem;
+      font-size: 1rem;
+    }
+
     /* Animations */
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(-10px); }
@@ -358,6 +408,8 @@
     <section class="presets" id="presets">
       <h2>Our Presets</h2>
       <p>Explore our collection of professionally crafted presets designed to elevate your photos and videos with timeless tones and stunning effects.</p>
+      <div id="presetGrid" class="preset-grid"></div>
+      <div id="errorMessage" class="error-message"></div>
     </section>
     <section class="faq" id="faq">
       <h2>Frequently Asked Questions</h2>
@@ -413,11 +465,6 @@
             <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
           </svg>
         </a>
-        <a href="#" onclick="window.tidioChatApi && window.tidioChatApi.open()" aria-label="Chat with FNL Lite">
-          <svg viewBox="0 0 24 24">
-            <path d="M21 6h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7c0-.55-.45-1-1-1zm-4 6V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h10c.55 0 1-.45 1-1z"/>
-          </svg>
-        </a>
       </div>
     </div>
     <div class="about-us">
@@ -434,6 +481,12 @@
   </footer>
 
   <script>
+    const BIN_ID = "67fccb0b8960c979a584b5d5";
+    const MASTER_KEY = "$2a$10$PlYW4zt8k/Be46UjnPgRSex64CZn7Sk7ifMW09AgYaT1.jS2pwjnO";
+    const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+    const presetGrid = document.getElementById("presetGrid");
+    const errorMessage = document.getElementById("errorMessage");
+
     // Theme Toggle
     const root = document.documentElement;
     const themeButton = document.querySelector('.theme-toggle');
@@ -471,7 +524,39 @@
       }
     }
 
-    // Simplified Cursor Animation
+    // Fetch and Display Presets
+    async function fetchPresets() {
+      try {
+        const response = await fetch(API_URL + "/latest", { headers: { "X-Master-Key": MASTER_KEY } });
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const data = await response.json();
+        displayPresets(data.record.presets || []);
+      } catch (error) {
+        console.error("Error fetching presets:", error);
+        errorMessage.textContent = "Error fetching presets: " + error.message;
+      }
+    }
+
+    function displayPresets(presets) {
+      presetGrid.innerHTML = '';
+      if (presets.length === 0) {
+        presetGrid.innerHTML = '<p>No presets available.</p>';
+        return;
+      }
+      presets.forEach(preset => {
+        const presetItem = document.createElement('div');
+        presetItem.className = 'preset-item';
+        presetItem.innerHTML = `
+          <img src="${preset.thumbnail_url}" alt="${preset.name} Thumbnail">
+          <h3>${preset.name}</h3>
+          <p>₹${preset.price}</p>
+          <a href="https://www.instagram.com/fnl_studio_/direct/" target="_blank" class="btn">Buy</a>
+        `;
+        presetGrid.appendChild(presetItem);
+      });
+    }
+
+    // Cursor Animation
     const canvas = document.getElementById('cursor-canvas');
     const ctx = canvas.getContext('2d');
 
@@ -498,14 +583,16 @@
         this.x += this.speedX;
         this.y += this.speedY;
         this.opacity -= 0.02;
-        this.size -= 0.05;
+        this.size = Math.max(0, this.size - 0.05);
       }
 
       draw() {
-        ctx.fillStyle = `rgba(91, 95, 199, ${this.opacity})`;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
+        if (this.size > 0) {
+          ctx.fillStyle = `rgba(91, 95, 199, ${this.opacity})`;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
       }
     }
 
@@ -515,7 +602,7 @@
         p.update();
         p.draw();
       });
-      particles = particles.filter(p => p.opacity > 0);
+      particles = particles.filter(p => p.opacity > 0 && p.size > 0);
       requestAnimationFrame(animate);
     }
 
@@ -525,7 +612,8 @@
       const particle = new Particle(e.clientX, e.clientY);
       particles.push(particle);
     });
+
+    window.onload = fetchPresets;
   </script>
-  <script src="//code.tidio.co/e8blwjl6fn8lco7gmjtnc2nk72gojjog.js" async></script>
 </body>
 </html>
